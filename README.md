@@ -9,7 +9,7 @@ _* Only on iOS_
 Straight forward, just via `cordova plugin add`.
 
 ```
-cordova plugin add @gartorware/cordova-plugin-ionic-migrate-storage --save
+cordova plugin add https://github.com/GartorwareCorp/cordova-plugin-ionic-migrate-storage#v0.2.0 --save
 ```
 
 **The plugin uses [the `WKPort` preference supplied to the ionic webview](https://github.com/ionic-team/cordova-plugin-ionic-webview/tree/2.x#wkport) for cordova-plugin-ionic-webview v2x version. If that was not found, the default port is used (`8080`). (Not tested)**
@@ -34,7 +34,7 @@ cordova plugin rm --save cordova-plugin-ionic-webview @gartorware/cordova-plugin
 * Add the plugins back:
         
 ```
-cordova plugin add --save cordova-plugin-ionic-webview@2.3.2 @gartorware/cordova-plugin-ionic-migrate-storage@0.2.0
+cordova plugin add --save cordova-plugin-ionic-webview@4.0.1 https://github.com/GartorwareCorp/cordova-plugin-ionic-migrate-storage#v0.2.0
 ```
 
 * Build your app and run it. The stored data must all exist!
