@@ -1,5 +1,6 @@
 {
   "name": "@gartorware/cordova-plugin-ionic-migrate-storage",
+  "version": "0.2.0",
   "cordova": {
     "id": "cordova-plugin-ionic-migrate-storage",
     "platforms": [
