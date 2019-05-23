@@ -33,11 +33,16 @@ public class MigrateStorage extends CordovaPlugin {
     private static final String TAG = "com.migrate.android";
     private static final String FILE_PROTOCOL = "file://";
     private static final String WEBSQL_FILE_DIR_NAME = "file__0";
-    private static final String DEFAULT_PORT_NUMBER = "8080";
+    private static final String DEFAULT_HOSTNAME = "localhost";
+    private static final String DEFAULT_SCHEME = "http";
+
     private static final String CDV_SETTING_PORT_NUMBER = "WKPort";
+    private static final String SETTING_HOSTNAME = "Hostname";
+    private static final String SETTING_SCHEME = "Scheme";
 
     private String portNumber;
-
+    private String hostname;
+    private String scheme;
 
     private void logDebug(String message) {
         if(DEBUG_MODE) Log.d(TAG, message);
@@ -47,8 +52,24 @@ public class MigrateStorage extends CordovaPlugin {
         return "http_localhost_" + this.portNumber;
     }
 
+    private String getWebSQLDirName() {
+        String result = this.scheme + "_" + this.hostname;
+        if(this.portNumber != null && !this.portNumber.isEmpty()) {
+            result += "_" + this.portNumber;
+        }
+        return result;
+    }
+
     private String getLocalHostProtocol() {
         return "http://localhost:" + this.portNumber;
+    }
+
+    private String getLocalStorageProtocol() {
+        String result = this.scheme + "://" + this.hostname;
+        if(this.portNumber != null && !this.portNumber.isEmpty()) {
+            result += ":" + this.portNumber;
+        }
+        return result;
     }
 
     private String getRootPath() {
@@ -73,7 +94,7 @@ public class MigrateStorage extends CordovaPlugin {
     }
 
     /**
-     * Migrate localStorage from `file://` to `http://localhost:{portNumber}`
+     * Migrate localStorage from `file://` to `{scheme}://{hostname}`
      *
      * TODO Test if we can we remove old file:// keys?
      *
@@ -93,10 +114,10 @@ public class MigrateStorage extends CordovaPlugin {
 
         LevelDB db = new LevelDB(levelDbPath);
 
-        String localHostProtocol = this.getLocalHostProtocol();
+        String localStorageProtocol = this.getLocalStorageProtocol();
 
-        if(db.exists(Utils.stringToBytes("META:" + localHostProtocol))) {
-            this.logDebug("migrateLocalStorage: Found 'META:" + localHostProtocol + "' key; Skipping migration");
+        if(db.exists(Utils.stringToBytes("META:" + localStorageProtocol))) {
+            this.logDebug("migrateLocalStorage: Found 'META:" + localStorageProtocol + "' key; Skipping migration");
             db.close();
             return;
         }
@@ -107,17 +128,16 @@ public class MigrateStorage extends CordovaPlugin {
         // To update in bulk!
         WriteBatch batch = new WriteBatch();
 
-
-        // 🔃 Loop through the keys and replace `file://` with `http://localhost:{portNumber}`
+        // 🔃 Loop through the keys and replace `file://` with `{scheme}://{hostname}`
         logDebug("migrateLocalStorage: Starting replacements;");
         for(iterator.seekToFirst(); iterator.isValid(); iterator.next()) {
             String key = Utils.bytesToString(iterator.key());
             byte[] value = iterator.value();
 
             if (key.contains(FILE_PROTOCOL)) {
-                String newKey = key.replace(FILE_PROTOCOL, localHostProtocol);
+                String newKey = key.replace(FILE_PROTOCOL, localStorageProtocol);
 
-                logDebug("migrateLocalStorage: Changing key:" + key + " to '" + newKey + "'");
+                logDebug("migrateLocalStorage: Changing key: " + key + " to '" + newKey + "'");
 
                 // Add new key to db
                 batch.putBytes(Utils.stringToBytes(newKey), value);
@@ -137,7 +157,7 @@ public class MigrateStorage extends CordovaPlugin {
 
 
     /**
-     * Migrate WebSQL from using `file://` to `http://localhost:{portNumber}`
+     * Migrate WebSQL from using `file://` to `{scheme}://{hostname}`
      *
      */
     private void migrateWebSQL() {
@@ -145,7 +165,7 @@ public class MigrateStorage extends CordovaPlugin {
 
         String databasesPath = this.getWebSQLDatabasesPath();
         String referenceDbPath = this.getWebSQLReferenceDbPath();
-        String localHostDirName = this.getLocalHostProtocolDirName();
+        String webSqlDirName = this.getWebSQLDirName();
 
         if(!new File(referenceDbPath).exists()) {
             logDebug("migrateWebSQL: Databases.db was not found in path: '" + referenceDbPath + "'; Exiting..");
@@ -153,7 +173,7 @@ public class MigrateStorage extends CordovaPlugin {
         }
 
         File originalWebSQLDir = new File(databasesPath + "/" + WEBSQL_FILE_DIR_NAME);
-        File targetWebSQLDir = new File(databasesPath + "/" + localHostDirName);
+        File targetWebSQLDir = new File(databasesPath + "/" + webSqlDirName);
 
         if(!originalWebSQLDir.exists()) {
             logDebug("migrateWebSQL: original DB does not exist at '" + originalWebSQLDir.getAbsolutePath() + "'; Exiting..");
@@ -170,7 +190,7 @@ public class MigrateStorage extends CordovaPlugin {
         SQLiteDatabase db = SQLiteDatabase.openDatabase(referenceDbPath, null, 0);
 
         // Update reference DB to point to `localhost:{portNumber}`
-        db.execSQL("UPDATE Databases SET origin = ? WHERE origin = ?", new String[] { localHostDirName, WEBSQL_FILE_DIR_NAME });
+        db.execSQL("UPDATE Databases SET origin = ? WHERE origin = ?", new String[] { webSqlDirName, WEBSQL_FILE_DIR_NAME });
         
         // rename `databases/file__0` dir to `databases/localhost_http_{portNumber}`
         boolean renamed = originalWebSQLDir.renameTo(targetWebSQLDir);
@@ -197,7 +217,12 @@ public class MigrateStorage extends CordovaPlugin {
             super.initialize(cordova, webView);
 
             this.portNumber = this.preferences.getString(CDV_SETTING_PORT_NUMBER, "");
-            if(this.portNumber.isEmpty() || this.portNumber == null) this.portNumber = DEFAULT_PORT_NUMBER;
+
+            this.hostname = this.preferences.getString(SETTING_HOSTNAME, "");
+            if(this.hostname.isEmpty() || this.hostname == null) this.hostname = DEFAULT_HOSTNAME;
+
+            this.scheme = this.preferences.getString(SETTING_SCHEME, "");
+            if(this.scheme.isEmpty() || this.scheme == null) this.scheme = DEFAULT_SCHEME;
 
             logDebug("Starting migration;");
 
