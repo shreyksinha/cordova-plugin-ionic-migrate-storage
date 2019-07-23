@@ -90,7 +90,7 @@ public class MigrateStorage extends CordovaPlugin {
     }
 
     /**
-     * Migrate localStorage from `{prevScheme}://{prevHostname}` to `{newScheme}://{newHostname}`
+     * Migrate localStorage from `{prevScheme}://{prevHostname}:{prevPort}` to `{newScheme}://{newHostname}:{newPort}`
      *
      * @throws Exception - Can throw LevelDBException
      */
@@ -127,16 +127,14 @@ public class MigrateStorage extends CordovaPlugin {
         // To update in bulk!
         WriteBatch batch = new WriteBatch();
 
-        // 🔃 Loop through the keys and replace `file://` with `{scheme}://{hostname}`
+        // 🔃 Loop through the keys and replace `{prevScheme}://{prevHostname}:{prevPort}` with `{newScheme}://{newHostname}:{newPort}`
         logDebug("migrateLocalStorage: Starting replacements;");
         for(iterator.seekToFirst(); iterator.isValid(); iterator.next()) {
             String key = Utils.bytesToString(iterator.key());
             byte[] value = iterator.value();
             if (key.startsWith(prevLocalStorageKeyPrefix) || key.equals(prevLocalStorageMetaKey)) {
                 String newKey = key.replace(prevLocalStorageBaseURL, newLocalStorageBaseURL);
-
                 logDebug("migrateLocalStorage: Changing key: " + key + " to '" + newKey + "'");
-
                 // Add new key to db
                 batch.putBytes(Utils.stringToBytes(newKey), value);
             } else {
