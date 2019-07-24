@@ -9,7 +9,7 @@ _* Only on iOS_
 Straight forward, just via `cordova plugin add`.
 
 ```
-cordova plugin add https://github.com/GartorwareCorp/cordova-plugin-ionic-migrate-storage#v0.2.0 --save
+cordova plugin add https://github.com/styleseat/cordova-plugin-ionic-migrate-storage --save
 ```
 
 **The plugin uses [the `WKPort` preference supplied to the ionic webview](https://github.com/ionic-team/cordova-plugin-ionic-webview/tree/2.x#wkport) for cordova-plugin-ionic-webview v2x version. If that was not found, the default port is used (`8080`). (Not tested)**
@@ -27,21 +27,21 @@ To test this, you will have to do the following:
 * Remove the webview and migrate plugins from your app:
 
 ```
-cordova plugin rm --save cordova-plugin-ionic-webview @gartorware/cordova-plugin-ionic-migrate-storage
+cordova plugin rm --save cordova-plugin-ionic-webview @styleseat/cordova-plugin-ionic-migrate-storage
 ```
 
 * Build your app and run it. Store something in localStorage, WebSQL and IndexedDB.
 * Add the plugins back:
         
 ```
-cordova plugin add --save cordova-plugin-ionic-webview@4.0.1 https://github.com/GartorwareCorp/cordova-plugin-ionic-migrate-storage#v0.2.0
+cordova plugin add --save cordova-plugin-ionic-webview@4.0.1 https://github.com/styleseat/cordova-plugin-ionic-migrate-storage
 ```
 
 * Build your app and run it. The stored data must all exist!
 
 ## Caveats / Warnings / Gotchas
 
-* Until the plugin reaches `v.1.0.0`, breaking changes will be introduced in every minor version upgrade! Use one of [the tags listed here](https://github.com/GartorwareCorp/cordova-plugin-ionic-migrate-storage/releases) if you want to lock it down to a specific changeset.
+* Until the plugin reaches `v.1.0.0`, breaking changes will be introduced in every minor version upgrade! Use one of [the tags listed here](https://github.com/styleseat/cordova-plugin-ionic-migrate-storage/releases) if you want to lock it down to a specific changeset.
 * **This has been tested only with `android` and `cordova-plugin-ionic-webview@4.0.1`!**
 * Currently, this plugin does not work on simulators. PRs welcome!
 * IndexedDB migration has not been implemented in Android, because [it looks tricky](https://stackoverflow.com/a/35142175).
