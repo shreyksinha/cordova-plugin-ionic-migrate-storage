@@ -19,7 +19,7 @@
 
 #define DEFAULT_TARGET_HOSTNAME @"localhost"
 #define DEFAULT_TARGET_SCHEME @"ionic"
-#define DEFAULT_TARGET_PORT_NUMBER @""
+#define DEFAULT_TARGET_PORT_NUMBER @"0"
 
 #define DEFAULT_ORIGINAL_HOSTNAME @"localhost"
 #define DEFAULT_ORIGINAL_SCHEME @"http"
@@ -46,20 +46,12 @@
 
 - (NSString*)getOriginalPath
 {
-    NSString *path = [NSString stringWithFormat:@"%@_%@", self.originalScheme, self.originalHostname];
-    if (self.originalPortNumber) {
-        path = [path stringByAppendingFormat: @"_%@", self.originalPortNumber];
-    }
-    return path;
+    return [NSString stringWithFormat:@"%@_%@_%@", self.originalScheme, self.originalHostname, self.originalPortNumber];
 }
 
 - (NSString*)getTargetPath
 {
-    NSString *path = [NSString stringWithFormat:@"%@_%@", self.targetScheme, self.targetHostname];
-    if (self.targetPortNumber) {
-        path = [path stringByAppendingFormat: @"_%@", self.targetPortNumber];
-    }
-    return path;
+    return [NSString stringWithFormat:@"%@_%@_%@", self.targetScheme, self.targetHostname, self.targetPortNumber];
 }
 
 - (BOOL)moveFile:(NSString*)src to:(NSString*)dest
