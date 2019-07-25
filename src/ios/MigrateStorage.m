@@ -104,11 +104,25 @@
     
     NSString *targetLocalStorageFilePath = [[appLibraryFolder stringByAppendingPathComponent:LOCALSTORAGE_DIRPATH] stringByAppendingPathComponent:targetLocalStorageFileName];
     
-    logDebug(@"%@ LocalStorage original %@", TAG, original);
-    logDebug(@"%@ LocalStorage target %@", TAG, target);
+    logDebug(@"%@ LocalStorage original %@", TAG, originalLocalStorageFilePath);
+    logDebug(@"%@ LocalStorage target %@", TAG, targetLocalStorageFilePath);
+    
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    
+    if ([fileManager fileExistsAtPath:originalLocalStorageFilePath]) {
+        logDebug(@"%@ LocalStorage target exists!", TAG);
+    } else {
+        logDebug(@"%@ LocalStorage target does not exist!", TAG);
+    }
+
+    if ([fileManager fileExistsAtPath:targetLocalStorageFilePath]) {
+        logDebug(@"%@ LocalStorage original exists!", TAG);
+    } else {
+        logDebug(@"%@ LocalStorage original does not exist!", TAG);
+    }
     
     // Only copy data if no existing localstorage data exists yet for wkwebview
-    if (![[NSFileManager defaultManager] fileExistsAtPath:targetLocalStorageFilePath]) {
+    if (![fileManager fileExistsAtPath:targetLocalStorageFilePath]) {
         logDebug(@"%@ No existing localstorage data found for WKWebView. Migrating data from UIWebView", TAG);
         BOOL success1 = [self moveFile:originalLocalStorageFilePath to:targetLocalStorageFilePath];
         BOOL success2 = [self moveFile:[originalLocalStorageFilePath stringByAppendingString:@"-shm"] to:[targetLocalStorageFilePath stringByAppendingString:@"-shm"]];
@@ -117,7 +131,7 @@
         success = success1 && success2 && success3;
     }
     else {
-        logDebug(@"%@ found LocalStorage data. not migrating", TAG);
+        logDebug(@"%@ found existing target LocalStorage data. Not migrating.", TAG);
         success = NO;
     }
     
