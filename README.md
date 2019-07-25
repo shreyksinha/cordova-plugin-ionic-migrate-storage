@@ -1,22 +1,38 @@
 # `cordova-plugin-ionic-migrate-storage`
 
-> Cordova plugin that migrates WebSQL, localStorage and IndexedDB* data when you start using the `cordova-plugin-ionic-webview` plugin. This works for both Android and iOS!
-
-_* Only on iOS_
+> Cordova plugin that migrates localStorage data from cordova-plugin-ionic-webview@2.X.X to cordova-plugin-ionic-webview@3.X.X and above. This works for both Android and iOS!
 
 ## Installation
 
 Straight forward, just via `cordova plugin add`.
 
 ```
-cordova plugin add https://github.com/GartorwareCorp/cordova-plugin-ionic-migrate-storage#v0.2.0 --save
+cordova plugin add https://github.com/styleseat/cordova-plugin-ionic-migrate-storage --save
 ```
 
-**The plugin uses [the `WKPort` preference supplied to the ionic webview](https://github.com/ionic-team/cordova-plugin-ionic-webview/tree/2.x#wkport) for cordova-plugin-ionic-webview v2x version. If that was not found, the default port is used (`8080`). (Not tested)**
+This work is forked from https://github.com/pointmanhq/cordova-plugin-ionic-migrate-storage, which migrates IndexedDB, LocalStorage, and WebSQL from cordova's default UIWebView to cordova-plugin-ionic-webview. We needed to migrate not from the default UIWebView, but from cordova-plugin-ionic-webview@2.X.X to cordova-plugin-ionic-webview@4.X.X, and only localStorage was needed, so IndexedDB and WebSQL support were removed and the migration locations were made configurable. Theoretically, this plugin could also be used to migrate from UIWebView to cordova-plugin-ionic-migrate-storage. The following settings are configurable (defaults listed):
 
-**The plugin uses [the `hostname` preference supplied to the ionic webview](https://github.com/ionic-team/cordova-plugin-ionic-webview#hostname) for cordova-plugin-ionic-webview v3x/v4x version. If that was not found, the default hostname is used (`localhost`).**
 
-**The plugin uses [the `scheme` preference supplied to the ionic webview](https://github.com/ionic-team/cordova-plugin-ionic-webview#scheme) for cordova-plugin-ionic-webview v3x/v4x version. If that was not found, the default scheme is used (`http`).**
+#define DEFAULT_TARGET_HOSTNAME @"localhost"
+#define DEFAULT_TARGET_SCHEME @"ionic"
+#define DEFAULT_TARGET_PORT_NUMBER @"0"
+
+#define DEFAULT_ORIGINAL_HOSTNAME @"localhost"
+#define DEFAULT_ORIGINAL_SCHEME @"http"
+#define DEFAULT_ORIGINAL_PORT_NUMBER @"8080"
+
+```xml
+<!-- cordova-plugin-ionic-webview@4.x.x defaults to serving from http://localhost on Android and ionic://localhost on iOS -->
+<preference name="Scheme" value="http" />
+<preference name="iosScheme" value="ionic" />
+<preference name="Hostname" value="localhost" />
+<preference name="WKPort" value="" />
+
+<!-- cordova-plugin-ionic-webview@2.x.x defaults to serving from http://localhost:8080 -->
+<preference name="MIGRATE_STORAGE_ORIGINAL_SCHEME" value="http" />
+<preference name="MIGRATE_STORAGE_ORIGINAL_HOSTNAME" value="localhost" />
+<preference name="MIGRATE_STORAGE_ORIGINAL_PORT_NUMBER" value="8080" />
+```
 
 
 ## Testing
@@ -27,25 +43,23 @@ To test this, you will have to do the following:
 * Remove the webview and migrate plugins from your app:
 
 ```
-cordova plugin rm --save cordova-plugin-ionic-webview @gartorware/cordova-plugin-ionic-migrate-storage
+cordova plugin rm --save cordova-plugin-ionic-webview @styleseat/cordova-plugin-ionic-migrate-storage
 ```
 
 * Build your app and run it. Store something in localStorage, WebSQL and IndexedDB.
 * Add the plugins back:
         
 ```
-cordova plugin add --save cordova-plugin-ionic-webview@4.0.1 https://github.com/GartorwareCorp/cordova-plugin-ionic-migrate-storage#v0.2.0
+cordova plugin add --save cordova-plugin-ionic-webview@4.0.1 https://github.com/styleseat/cordova-plugin-ionic-migrate-storage
 ```
 
 * Build your app and run it. The stored data must all exist!
 
 ## Caveats / Warnings / Gotchas
 
-* Until the plugin reaches `v.1.0.0`, breaking changes will be introduced in every minor version upgrade! Use one of [the tags listed here](https://github.com/GartorwareCorp/cordova-plugin-ionic-migrate-storage/releases) if you want to lock it down to a specific changeset.
-* **This has been tested only with `android` and `cordova-plugin-ionic-webview@4.0.1`!**
+* Until the plugin reaches `v.1.0.0`, breaking changes will be introduced in every minor version upgrade! Use one of [the tags listed here](https://github.com/styleseat/cordova-plugin-ionic-migrate-storage/releases) if you want to lock it down to a specific changeset.
+* **This has only been tested with `android` and `ios`, migrating from `cordova-plugin-ionic-webview@2.2.5` to `cordova-plugin-ionic-webview@4.1.0`!**
 * Currently, this plugin does not work on simulators. PRs welcome!
-* IndexedDB migration has not been implemented in Android, because [it looks tricky](https://stackoverflow.com/a/35142175).
-* IndexedDB migration on iOS may be buggy, a PR or two will be needed to make it better. 
 * This copy is uni-directional, from old webview to new webview. It does not go the other way around. So essentially, this plugin will run only once! 
 * **Once again!**: **This has been tested only with `android` and `cordova-plugin-ionic-webview@4.0.1`!**
 

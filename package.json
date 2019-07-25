@@ -1,6 +1,6 @@
 {
-  "name": "@gartorware/cordova-plugin-ionic-migrate-storage",
-  "version": "0.2.0",
+  "name": "@styleseat/cordova-plugin-ionic-migrate-storage",
+  "version": "0.3.0",
   "cordova": {
     "id": "cordova-plugin-ionic-migrate-storage",
     "platforms": [
@@ -15,5 +15,5 @@
   },
   "keywords": ["ecosystem:cordova", "cordova", "cordova-plugin", "cordova-ios", "cordova-android", "ios", "android", "uiwebview", "wkwebview", "websql", "localstorage", "indexeddb"],
   "author": "Pointman Dev <dev@pointman.com>",
-  "contributors": ["Gartorware <gartorware@gmail.com>"]
+  "contributors": ["Gartorware <gartorware@gmail.com>", "StyleSeat <engineering@styleseat.com>"]
 }
