@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0" 
-    xmlns:android="http://schemas.android.com/apk/res/android" id="cordova-plugin-ionic-migrate-storage" version="0.2.0">
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"  id="cordova-plugin-ionic-migrate-storage" version="0.3.0">
     <name>cordova-plugin-ionic-migrate-storage</name>
     <description>
-        Cordova plugin that migrates WebSQL, localStorage and IndexedDB (iOS only) data when you start using the `cordova-plugin-ionic-webview` plugin. 
-        This works for both Android and iOS!
+        Cordova plugin that migrates localStorage datafrom `cordova-plugin-ionic-webview` 1.x to 4.x
+        This works iOS only!
     </description>
-    <keywords>ecosystem:cordova,cordova-plugin,cordova,cordova-ios,cordova-android,ios,android,uiwebview,wkwebview,websql,localstorage,indexeddb</keywords>
+    <keywords>ecosystem:cordova,cordova-plugin,cordova,cordova-ios,ios,uiwebview,wkwebview,localstorage</keywords>
 
     <platform name="ios">
         <config-file target="config.xml" parent="/*">
@@ -20,18 +19,5 @@
         <source-file src="src/ios/MigrateStorage.m" />
 
         <framework src="FMDB" type="podspec" spec="~> 2.7.4" />
-    </platform>
-
-    <platform name="android">
-        <config-file parent="/*" target="res/xml/config.xml">
-            <feature name="MigrateStorage">
-                <param name="android-package" value="com.migrate.android.MigrateStorage" />
-                <param name="onload" value="true" />
-            </feature>
-        </config-file>
-        
-        <framework src="src/android/migrate-storage.gradle" custom="true" type="gradleReference"/>
-
-        <source-file src="src/android/MigrateStorage.java" target-dir="src/com/migrate/android" />
     </platform>
 </plugin>

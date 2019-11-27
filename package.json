@@ -1,19 +1,18 @@
 {
-  "name": "@styleseat/cordova-plugin-ionic-migrate-storage",
+  "name": "@kassamina/cordova-plugin-ionic-migrate-storage",
   "version": "0.3.0",
   "cordova": {
     "id": "cordova-plugin-ionic-migrate-storage",
     "platforms": [
-      "ios",
-      "android"
+      "ios"
     ]
   },
-  "description": "Cordova plugin that migrates WebSQL, localStorage and IndexedDB (iOS only) data when you start using the `cordova-plugin-ionic-webview` plugin. This works for both Android and iOS!",
+  "description": "Cordova plugin that migrates localStorage datafrom `cordova-plugin-ionic-webview` 1.x to 4.x This works for iOS only!",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["ecosystem:cordova", "cordova", "cordova-plugin", "cordova-ios", "cordova-android", "ios", "android", "uiwebview", "wkwebview", "websql", "localstorage", "indexeddb"],
-  "author": "Pointman Dev <dev@pointman.com>",
-  "contributors": ["Gartorware <gartorware@gmail.com>", "StyleSeat <engineering@styleseat.com>"]
+  "keywords": ["ecosystem:cordova", "cordova", "cordova-plugin", "cordova-ios", "ios", "uiwebview", "wkwebview", "localstorage"],
+  "author": "kassamina <venna138@gmail.com>",
+  "contributors": ["Pointman Dev <dev@pointman.com>", "Gartorware <gartorware@gmail.com>", "StyleSeat <engineering@styleseat.com>"]
 }

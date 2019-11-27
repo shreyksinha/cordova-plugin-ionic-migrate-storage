@@ -15,7 +15,8 @@
 
 #define TAG @"\nMigrateStorage"
 
-#define LOCALSTORAGE_DIRPATH @"WebKit/WebsiteData/LocalStorage/"
+#define ORIGINAL_LOCALSTORAGE_DIRPATH @"WebKit/LocalStorage/"
+#define TARGET_LOCALSTORAGE_DIRPATH @"WebKit/WebsiteData/LocalStorage/"
 
 #define DEFAULT_TARGET_HOSTNAME @"localhost"
 #define DEFAULT_TARGET_SCHEME @"ionic"
@@ -25,7 +26,8 @@
 #define DEFAULT_ORIGINAL_SCHEME @"http"
 #define DEFAULT_ORIGINAL_PORT_NUMBER @"8080"
 
-#define SETTING_TARGET_PORT_NUMBER @"WKPort"
+// target port should be 0 for ios / scheme ionic
+#define SETTING_TARGET_PORT_NUMBER @"0"
 #define SETTING_TARGET_HOSTNAME @"Hostname"
 #define SETTING_TARGET_SCHEME @"iosScheme"
 
@@ -100,9 +102,9 @@
 
     NSString *targetLocalStorageFileName = [targetPath stringByAppendingString:@".localstorage"];
     
-    NSString *originalLocalStorageFilePath = [[appLibraryFolder stringByAppendingPathComponent:LOCALSTORAGE_DIRPATH] stringByAppendingPathComponent:originalLocalStorageFileName];
+    NSString *originalLocalStorageFilePath = [[appLibraryFolder stringByAppendingPathComponent:ORIGINAL_LOCALSTORAGE_DIRPATH] stringByAppendingPathComponent:originalLocalStorageFileName];
     
-    NSString *targetLocalStorageFilePath = [[appLibraryFolder stringByAppendingPathComponent:LOCALSTORAGE_DIRPATH] stringByAppendingPathComponent:targetLocalStorageFileName];
+    NSString *targetLocalStorageFilePath = [[appLibraryFolder stringByAppendingPathComponent:TARGET_LOCALSTORAGE_DIRPATH] stringByAppendingPathComponent:targetLocalStorageFileName];
     
     logDebug(@"%@ LocalStorage original %@", TAG, originalLocalStorageFilePath);
     logDebug(@"%@ LocalStorage target %@", TAG, targetLocalStorageFilePath);
