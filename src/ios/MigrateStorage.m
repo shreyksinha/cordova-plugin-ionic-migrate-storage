@@ -5,7 +5,7 @@
 #import "FMDB.h"
 
 // Uncomment this to enable debug mode
- #define DEBUG_MODE = 1;
+// #define DEBUG_MODE = 1;
 
 #ifdef DEBUG_MODE
 #   define logDebug(...) NSLog(__VA_ARGS__)
@@ -71,13 +71,13 @@
     // Bail out if dest file exists
     if ([fileManager fileExistsAtPath:dest]) {
         logDebug(@"%@ ignoring - destination file already exists: %@", TAG, dest);
-        // return NO;
+         return NO;
     }
 
     // create path to destination
     if (![fileManager createDirectoryAtPath:[dest stringByDeletingLastPathComponent] withIntermediateDirectories:YES attributes:nil error:nil]) {
         logDebug(@"%@ ignoring - create dir failed: %@", TAG, dest);
-        // return NO;
+         return NO;
     }
 
     BOOL res = [fileManager moveItemAtPath:src toPath:dest error:nil];
