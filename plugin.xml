@@ -9,6 +9,7 @@
     <keywords>ecosystem:cordova,cordova-plugin,cordova,cordova-ios,ios,uiwebview,wkwebview,localstorage</keywords>
 
     <platform name="ios">
+        <dependency id="cordova-plugin-cocoapod-support"/>
         <config-file target="config.xml" parent="/*">
             <feature name="MigrateStorage">
                 <param name="ios-package" value="MigrateStorage" onload="true" />

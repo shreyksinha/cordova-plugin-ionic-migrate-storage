@@ -1,11 +1,11 @@
 #import <Cordova/CDV.h>
 #import <Cordova/NSDictionary+CordovaPreferences.h>
-
+#import <sqlite3.h>
 #import "MigrateStorage.h"
 #import "FMDB.h"
 
 // Uncomment this to enable debug mode
-// #define DEBUG_MODE = 1;
+ #define DEBUG_MODE = 1;
 
 #ifdef DEBUG_MODE
 #   define logDebug(...) NSLog(__VA_ARGS__)
@@ -15,8 +15,7 @@
 
 #define TAG @"\nMigrateStorage"
 
-#define ORIGINAL_LOCALSTORAGE_DIRPATH @"WebKit/LocalStorage/"
-#define TARGET_LOCALSTORAGE_DIRPATH @"WebKit/WebsiteData/LocalStorage/"
+#define LOCALSTORAGE_DIRPATH @"WebKit/WebsiteData/LocalStorage/"
 
 #define DEFAULT_TARGET_HOSTNAME @"localhost"
 #define DEFAULT_TARGET_SCHEME @"ionic"
@@ -26,8 +25,7 @@
 #define DEFAULT_ORIGINAL_SCHEME @"http"
 #define DEFAULT_ORIGINAL_PORT_NUMBER @"8080"
 
-// target port should be 0 for ios / scheme ionic
-#define SETTING_TARGET_PORT_NUMBER @"0"
+#define SETTING_TARGET_PORT_NUMBER @"WKPort"
 #define SETTING_TARGET_HOSTNAME @"Hostname"
 #define SETTING_TARGET_SCHEME @"iosScheme"
 
@@ -61,56 +59,57 @@
     logDebug(@"%@ moveFile()", TAG);
     logDebug(@"%@ moveFile() src: %@", TAG, src);
     logDebug(@"%@ moveFile() dest: %@", TAG, dest);
-    
+
     NSFileManager *fileManager = [NSFileManager defaultManager];
-    
+
     // Bail out if source file does not exist
     if (![fileManager fileExistsAtPath:src]) {
         logDebug(@"%@ source file does not exist: %@", TAG, src);
         return NO;
     }
-    
+
     // Bail out if dest file exists
     if ([fileManager fileExistsAtPath:dest]) {
-        logDebug(@"%@ destination file already exists: %@", TAG, dest);
-        return NO;
+        logDebug(@"%@ ignoring - destination file already exists: %@", TAG, dest);
+        // return NO;
     }
-    
+
     // create path to destination
     if (![fileManager createDirectoryAtPath:[dest stringByDeletingLastPathComponent] withIntermediateDirectories:YES attributes:nil error:nil]) {
-        return NO;
+        logDebug(@"%@ ignoring - create dir failed: %@", TAG, dest);
+        // return NO;
     }
-    
+
     BOOL res = [fileManager moveItemAtPath:src toPath:dest error:nil];
-    
+
     logDebug(@"%@ end moveFile(src: %@ , dest: %@ ); success: %@", TAG, src, dest, res ? @"YES" : @"NO");
-    
+
     return res;
 }
 
 - (BOOL) migrateLocalStorage
 {
     logDebug(@"%@ migrateLocalStorage()", TAG);
-    
+
     BOOL success;
     NSString *originalPath = [self getOriginalPath];
     NSString *targetPath = [self getTargetPath];
-    
+
     NSString *appLibraryFolder = [NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-    
+
     NSString *originalLocalStorageFileName = [originalPath stringByAppendingString:@".localstorage"];
 
     NSString *targetLocalStorageFileName = [targetPath stringByAppendingString:@".localstorage"];
-    
-    NSString *originalLocalStorageFilePath = [[appLibraryFolder stringByAppendingPathComponent:ORIGINAL_LOCALSTORAGE_DIRPATH] stringByAppendingPathComponent:originalLocalStorageFileName];
-    
-    NSString *targetLocalStorageFilePath = [[appLibraryFolder stringByAppendingPathComponent:TARGET_LOCALSTORAGE_DIRPATH] stringByAppendingPathComponent:targetLocalStorageFileName];
-    
+
+    NSString *originalLocalStorageFilePath = [[appLibraryFolder stringByAppendingPathComponent:LOCALSTORAGE_DIRPATH] stringByAppendingPathComponent:originalLocalStorageFileName];
+
+    NSString *targetLocalStorageFilePath = [[appLibraryFolder stringByAppendingPathComponent:LOCALSTORAGE_DIRPATH] stringByAppendingPathComponent:targetLocalStorageFileName];
+
     logDebug(@"%@ LocalStorage original %@", TAG, originalLocalStorageFilePath);
     logDebug(@"%@ LocalStorage target %@", TAG, targetLocalStorageFilePath);
-    
+
     NSFileManager *fileManager = [NSFileManager defaultManager];
-    
+
     if ([fileManager fileExistsAtPath:originalLocalStorageFilePath]) {
         logDebug(@"%@ LocalStorage target exists!", TAG);
     } else {
@@ -122,7 +121,34 @@
     } else {
         logDebug(@"%@ LocalStorage original does not exist!", TAG);
     }
-    
+
+    sqlite3 *oldLocalStorageDB;
+
+    if([fileManager fileExistsAtPath:originalLocalStorageFilePath]){
+        logDebug(@"\n\n\ndatabase exists.");
+        const char *dbpath = [originalLocalStorageFilePath UTF8String];
+        int open_rc = sqlite3_open(dbpath, &oldLocalStorageDB);
+
+        if (open_rc == SQLITE_OK) {
+            logDebug(@"after sqlite3_open_v2");
+
+            NSMutableData* data = [NSMutableData dataWithLength:sizeof(char) * 100];
+            char* errmsg = [data mutableBytes];
+            const char* sqlCommand = "PRAGMA journal_mode = WAL;";
+
+            int exec_rc = sqlite3_exec(oldLocalStorageDB, sqlCommand, NULL, NULL, &errmsg);
+
+            logDebug(@"sqlite3_exec rc: %i", exec_rc);
+
+            sqlite3_close(oldLocalStorageDB);
+                                    logDebug(@"After sqlite3_close");
+        } else {
+            logDebug(@"sqlite3_open_v2 failed? %i", open_rc);
+        }
+    } else {
+        logDebug(@"Old localStorage not found");
+    }
+
     // Only copy data if no existing localstorage data exists yet for wkwebview
     if (![fileManager fileExistsAtPath:targetLocalStorageFilePath]) {
         logDebug(@"%@ No existing localstorage data found for WKWebView. Migrating data from UIWebView", TAG);
@@ -136,28 +162,28 @@
         logDebug(@"%@ found existing target LocalStorage data. Not migrating.", TAG);
         success = NO;
     }
-    
+
     logDebug(@"%@ end migrateLocalStorage() with success: %@", TAG, success ? @"YES": @"NO");
-    
+
     return success;
 }
 
 - (void)pluginInitialize
 {
     logDebug(@"%@ pluginInitialize()", TAG);
-    
+
     NSDictionary *cdvSettings = self.commandDelegate.settings;
 
     self.originalPortNumber = [cdvSettings cordovaSettingForKey:SETTING_ORIGINAL_PORT_NUMBER];
     if([self.originalPortNumber length] == 0) {
         self.originalPortNumber = DEFAULT_ORIGINAL_PORT_NUMBER;
     }
-    
+
     self.originalHostname = [cdvSettings cordovaSettingForKey:SETTING_ORIGINAL_HOSTNAME];
     if([self.originalHostname length] == 0) {
         self.originalHostname = DEFAULT_ORIGINAL_HOSTNAME;
     }
-    
+
     self.originalScheme = [cdvSettings cordovaSettingForKey:SETTING_ORIGINAL_SCHEME];
     if([self.originalScheme length] == 0) {
         self.originalScheme = DEFAULT_ORIGINAL_SCHEME;
@@ -167,22 +193,20 @@
     if([self.targetPortNumber length] == 0) {
         self.targetPortNumber = DEFAULT_TARGET_PORT_NUMBER;
     }
-    
+
     self.targetHostname = [cdvSettings cordovaSettingForKey:SETTING_TARGET_HOSTNAME];
     if([self.targetHostname length] == 0) {
         self.targetHostname = DEFAULT_TARGET_HOSTNAME;
     }
-    
+
     self.targetScheme = [cdvSettings cordovaSettingForKey:SETTING_TARGET_SCHEME];
     if([self.targetScheme length] == 0) {
         self.targetScheme = DEFAULT_TARGET_SCHEME;
     }
 
     [self migrateLocalStorage];
-    
+
     logDebug(@"%@ end pluginInitialize()", TAG);
 }
 
 @end
-
-
