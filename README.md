@@ -7,11 +7,10 @@
 Straight forward, just via `cordova plugin add`.
 
 ```
-cordova plugin add https://github.com/kassamina/cordova-plugin-ionic-migrate-storage --save
+cordova plugin add --save @kassamina/cordova-plugin-ionic-migrate-storage@0.3.0
 ```
 
 This work is forked from https://github.com/pointmanhq/cordova-plugin-ionic-migrate-storage, which migrates IndexedDB, LocalStorage, and WebSQL from cordova's default UIWebView to cordova-plugin-ionic-webview. We needed to migrate not from the default UIWebView, but from cordova-plugin-ionic-webview@1.X.X to cordova-plugin-ionic-webview@4.X.X, and only localStorage was needed, so IndexedDB and WebSQL support were removed and the migration locations were made configurable. Theoretically, this plugin could also be used to migrate from UIWebView to cordova-plugin-ionic-migrate-storage. The following settings are configurable (defaults listed):
-
 
 #define DEFAULT_TARGET_HOSTNAME @"localhost"
 #define DEFAULT_TARGET_SCHEME @"ionic"
@@ -43,7 +42,7 @@ To test this, you will have to do the following:
 * Remove the webview and migrate plugins from your app:
 
 ```
-cordova plugin rm --save cordova-plugin-ionic-webview @styleseat/cordova-plugin-ionic-migrate-storage
+cordova plugin rm --save cordova-plugin-ionic-webview @kassamina/cordova-plugin-ionic-migrate-storage
 ```
 
 * Build your app and run it. Store something in localStorage, WebSQL and IndexedDB.
