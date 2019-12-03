@@ -17,7 +17,5 @@
 
         <header-file src="src/ios/MigrateStorage.h" />
         <source-file src="src/ios/MigrateStorage.m" />
-
-        <framework src="FMDB" type="podspec" spec="~> 2.7.4" />
     </platform>
 </plugin>
