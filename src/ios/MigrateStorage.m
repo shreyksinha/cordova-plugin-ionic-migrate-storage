@@ -69,13 +69,13 @@
 
     // Bail out if dest file exists
     if ([fileManager fileExistsAtPath:dest]) {
-        logDebug(@"%@ ignoring - destination file already exists: %@", TAG, dest);
+        logDebug(@"%@ destination file already exists: %@", TAG, dest);
          return NO;
     }
 
     // create path to destination
     if (![fileManager createDirectoryAtPath:[dest stringByDeletingLastPathComponent] withIntermediateDirectories:YES attributes:nil error:nil]) {
-        logDebug(@"%@ ignoring - create dir failed: %@", TAG, dest);
+        logDebug(@"%@ create dir failed: %@", TAG, dest);
          return NO;
     }
 
@@ -124,12 +124,12 @@
     sqlite3 *oldLocalStorageDB;
 
     if([fileManager fileExistsAtPath:originalLocalStorageFilePath]){
-        logDebug(@"\n\n\ndatabase exists.");
+        logDebug(@"\n\n\nOld localStorage found.");
         const char *dbpath = [originalLocalStorageFilePath UTF8String];
         int open_rc = sqlite3_open(dbpath, &oldLocalStorageDB);
 
         if (open_rc == SQLITE_OK) {
-            logDebug(@"after sqlite3_open_v2");
+            logDebug(@"sqlite3_open_v2 was ok");
 
             NSMutableData* data = [NSMutableData dataWithLength:sizeof(char) * 100];
             char* errmsg = [data mutableBytes];
@@ -137,12 +137,12 @@
 
             int exec_rc = sqlite3_exec(oldLocalStorageDB, sqlCommand, NULL, NULL, &errmsg);
 
-            logDebug(@"sqlite3_exec rc: %i", exec_rc);
+            logDebug(@"sqlite3_exec return code: %i", exec_rc);
 
             sqlite3_close(oldLocalStorageDB);
                                     logDebug(@"After sqlite3_close");
         } else {
-            logDebug(@"sqlite3_open_v2 failed? %i", open_rc);
+            logDebug(@"sqlite3_open_v2 failed? return code: %i", open_rc);
         }
     } else {
         logDebug(@"Old localStorage not found");
