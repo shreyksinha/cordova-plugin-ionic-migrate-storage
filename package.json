@@ -1,6 +1,6 @@
 {
   "name": "@kassamina/cordova-plugin-ionic-migrate-storage",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "cordova": {
     "id": "cordova-plugin-ionic-migrate-storage",
     "platforms": [
