@@ -8,11 +8,30 @@
     ]
   },
   "description": "Cordova plugin that migrates localStorage datafrom `cordova-plugin-ionic-webview` 1.x to 4.x This works for iOS only!",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": ["ecosystem:cordova", "cordova", "cordova-plugin", "cordova-ios", "ios", "uiwebview", "wkwebview", "localstorage"],
+  "scripts": {},
+  "keywords": [
+    "ecosystem:cordova",
+    "cordova",
+    "cordova-plugin",
+    "cordova-ios",
+    "ios",
+    "uiwebview",
+    "wkwebview",
+    "localstorage"
+  ],
   "author": "kassamina <venna138@gmail.com>",
-  "contributors": ["Pointman Dev <dev@pointman.com>", "Gartorware <gartorware@gmail.com>", "StyleSeat <engineering@styleseat.com>"]
+  "contributors": [
+    "Pointman Dev <dev@pointman.com>",
+    "Gartorware <gartorware@gmail.com>",
+    "StyleSeat <engineering@styleseat.com>"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kassamina/cordova-plugin-ionic-migrate-storage.git"
+  },
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kassamina/cordova-plugin-ionic-migrate-storage/issues"
+  },
+  "homepage": "https://github.com/kassamina/cordova-plugin-ionic-migrate-storage#readme"
 }

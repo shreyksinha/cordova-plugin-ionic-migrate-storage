@@ -50,7 +50,7 @@ cordova plugin rm --save cordova-plugin-ionic-webview @styleseat/cordova-plugin-
 * Add the plugins back:
         
 ```
-cordova plugin add --save cordova-plugin-ionic-webview@4.1.3 https://github.com/kassamina/cordova-plugin-ionic-migrate-storage
+cordova plugin add --save cordova-plugin-ionic-webview@4.1.3 @kassamina/cordova-plugin-ionic-migrate-storage@0.3.0
 ```
 
 * Build your app and run it. The stored data must all exist!
@@ -79,4 +79,3 @@ Most of the code in this plugin was either adapted or inspired from a plethora o
 * Pull out debug flags to make them platform specific and not rely on booleans in the code.
 * Add some unit testing.
 * Open source stuff - github issue templates, CONTRIBUTING doc, Local development doc etc.
-* Publish this to `npm`.
