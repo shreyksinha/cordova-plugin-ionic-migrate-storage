@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"  id="cordova-plugin-ionic-migrate-storage" version="0.3.5">
-    <name>cordova-plugin-ionic-migrate-storage</name>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"  id="cordova-plugin-ionic-migrate-ios-storage" version="0.3.6">
+    <name>cordova-plugin-ionic-migrate-ios-storage</name>
     <description>
         Cordova plugin that migrates localStorage datafrom `cordova-plugin-ionic-webview` 1.x to 4.x
         This works iOS only!
