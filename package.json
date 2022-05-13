@@ -1,6 +1,6 @@
 {
   "name": "cordova-plugin-ionic-migrate-ios-storage",
-  "version": "0.3.6",
+  "version": "0.3.7",
   "cordova": {
     "id": "cordova-plugin-ionic-migrate-ios-storage",
     "platforms": [
