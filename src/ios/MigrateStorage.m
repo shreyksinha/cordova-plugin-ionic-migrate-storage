@@ -14,7 +14,7 @@
 
 #define TAG @"\nMigrateStorage"
 
-#define LOCALSTORAGE_DIRPATH @"WebKit/WebsiteData/LocalStorage/"
+#define LOCALSTORAGE_DIRPATH @"WebKit/com.nice.eem.nextgenmobile/WebsiteData/LocalStorage/"
 
 #define DEFAULT_TARGET_HOSTNAME @"localhost"
 #define DEFAULT_TARGET_SCHEME @"ionic"
