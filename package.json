@@ -19,7 +19,7 @@
     "wkwebview",
     "localstorage"
   ],
-  "author": "kassamina <venna138@gmail.com>",
+  "author": "shreyksinha <shreyk1999@nice.com>",
   "contributors": [
     "Pointman Dev <dev@pointman.com>",
     "Gartorware <gartorware@gmail.com>",
@@ -27,11 +27,11 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kassamina/cordova-plugin-ionic-migrate-storage.git"
+    "url": "git+https://github.com/shreyksinha/cordova-plugin-ionic-migrate-storage.git"
   },
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/kassamina/cordova-plugin-ionic-migrate-storage/issues"
+    "url": "https://github.com/shreyksinha/cordova-plugin-ionic-migrate-storage/issues"
   },
-  "homepage": "https://github.com/kassamina/cordova-plugin-ionic-migrate-storage#readme"
+  "homepage": "https://github.com/shreyksinha/cordova-plugin-ionic-migrate-storage#readme"
 }
